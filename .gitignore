@@ -4,6 +4,7 @@ spate
 
 *.csv
 *.log
+*.zip
 
 .idea/*
 junk/*
