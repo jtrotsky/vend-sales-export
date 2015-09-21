@@ -12,7 +12,7 @@ type CustomerPayload struct {
 // Customer is a customer object.
 type Customer struct {
 	ID             *string    `json:"id,omitempty"`
-	CustomerCode   *string    `json:"customer_code,omitempty"`
+	Code           *string    `json:"customer_code,omitempty"`
 	FirstName      *string    `json:"first_name,omitempty"`
 	LastName       *string    `json:"last_name,omitempty"`
 	Email          *string    `json:"email,omitempty"`
