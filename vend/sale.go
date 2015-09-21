@@ -1,6 +1,8 @@
 // Package vend interacts with the Vend API.
 package vend
 
+import "time"
+
 // SalePayload contains sales data and versioning info.
 type SalePayload struct {
 	Data    []Sale           `json:"data,omitempty"`
@@ -9,25 +11,85 @@ type SalePayload struct {
 
 // Sale is a basic sale object.
 type Sale struct {
-	ID        string     `json:"id,omitempty"`
-	LineItems []LineItem `json:"line_items,omitempty"`
-	Payments  []Payment  `json:"payments,omitempty"`
-	Taxes     []Tax      `json:"taxes,omitempty"`
+	ID              *string     `json:"id,omitempty"`
+	OutletID        *string     `json:"outlet_id,omitempty"`
+	RegisterID      *string     `json:"register_id,omitempty"`
+	UserID          *string     `json:"user_id,omitempty"`
+	CustomerID      *string     `json:"customer_id,omitempty"`
+	InvoiceNumber   *string     `json:"invoice_number,omitempty"`
+	ReceiptNumber   *string     `json:"receipt_number,omitempty"`
+	InvoiceSequence *int64      `json:"invoice_sequence,omitempty"`
+	ReceiptSequence *int64      `json:"receipt_sequence,omitempty"`
+	Status          *string     `json:"status,omitempty"`
+	Note            *string     `json:"note,omitempty"`
+	ShortCode       *string     `json:"short_code,omitempty"`
+	ReturnFor       *string     `json:"return_for,omitempty"`
+	CreatedAt       *time.Time  `json:"created_at,omitempty"`
+	UpdatedAt       *time.Time  `json:"updated_at,omitempty"`
+	SaleDate        *string     `json:"sale_date,omitempty"`
+	DeletedAt       *time.Time  `json:"deleted_at,omitempty"`
+	TotalPrice      *float64    `json:"total_price,omitempty"`
+	TotalLoyalty    *float64    `json:"total_loyalty,omitempty"`
+	TotalTax        *float64    `json:"total_tax,omitempty"`
+	LineItems       *[]LineItem `json:"line_items,omitempty"`
+	Payments        *[]Payment  `json:"payments,omitempty"`
+	Taxes           *[]Tax      `json:"taxes,omitempty"`
+	Version         *int64      `json:"version,omitempty"`
 }
 
 // LineItem is a product on a sale.
 type LineItem struct {
-	ID string `json:"id,omitempty"`
+	ID                *string         `json:"id,omitempty"`
+	ProductID         *string         `json:"product_id,omitempty"`
+	Quantity          *float64        `json:"quantity,omitempty"`
+	Price             *float64        `json:"price,omitempty"`
+	UnitPrice         *float64        `json:"unit_price,omitempty"`
+	PriceTotal        *float64        `json:"price_total,omitempty"`
+	TotalPrice        *float64        `json:"total_price,omitempty"`
+	Discount          *float64        `json:"discount,omitempty"`
+	UnitDiscount      *float64        `json:"unit_discount,omitempty"`
+	DiscountTotal     *float64        `json:"discount_total,omitempty"`
+	TotalDiscount     *float64        `json:"total_discount,omitempty"`
+	LoyaltyValue      *float64        `json:"loyalty_value,omitempty"`
+	UnitLoyaltyValue  *float64        `json:"unit_loyalty_value,omitempty"`
+	TotalLoyaltyValue *float64        `json:"total_loyalty_value,omitempty"`
+	Cost              *float64        `json:"cost,omitempty"`
+	UnitCost          *float64        `json:"unit_cost,omitempty"`
+	CostTotal         *float64        `json:"cost_total,omitempty"`
+	TotalCost         *float64        `json:"total_cost,omitempty"`
+	Tax               *float64        `json:"tax,omitempty"`
+	UnitTax           *float64        `json:"unit_tax,omitempty"`
+	TaxTotal          *float64        `json:"tax_total,omitempty"`
+	TotalTax          *float64        `json:"total_tax,omitempty"`
+	TaxID             *string         `json:"tax_id,omitempty"`
+	PriceSet          *bool           `json:"price_set,omitempty"`
+	Sequence          *int64          `json:"sequence,omitempty"`
+	Status            *string         `json:"status,omitempty"`
+	IsReturn          *bool           `json:"is_return,omitempty"`
+	TaxComponents     *[]TaxComponent `json:"tax_components,omitempty"`
+}
+
+// TaxComponent is a tax object on a sale.
+type TaxComponent struct {
+	RateID   string
+	TotalTax int64
 }
 
 // Payment is a payment on a sale.
 type Payment struct {
-	ID string `json:"id,omitempty"`
+	ID                    *string    `json:"id,omitempty"`
+	RegisterID            *string    `json:"register_id,omitempty"`
+	RetailerPaymentTypeID *string    `json:"retailer_payment_type_id,omitempty"`
+	PaymentTypeID         *string    `json:"payment_type_id,omitempty"`
+	Name                  *string    `json:"name,omitempty"`
+	PaymentDate           *time.Time `json:"payment_date,omitempty"`
+	Amount                *float64   `json:"amount,omitempty"`
 }
 
 // Tax is tax on a sale.
 type Tax struct {
-	ID string `json:"id,omitempty"`
+	ID     *string  `json:"id,omitempty"`
+	Amount *float64 `json:"amount,omitempty"`
 }
 
 /*

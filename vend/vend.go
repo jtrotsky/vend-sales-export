@@ -12,15 +12,16 @@ import (
 type Client struct {
 	Token        string
 	DomainPrefix string
+	TimeZone     string
 }
 
 // NewClient is called to pass authentication details to the manager.
-func NewClient(token, domainPrefix string) Client {
-	return Client{token, domainPrefix}
+func NewClient(token, domainPrefix, tz string) Client {
+	return Client{token, domainPrefix, tz}
 }
 
 // Sales grabs and collates all sales in pages of 10,000.
-func (c Client) Sales() ([]Sale, error) {
+func (c Client) Sales() (*[]Sale, error) {
 
 	sales := []Sale{}
 	s := []Sale{}
@@ -46,9 +47,9 @@ func (c Client) Sales() ([]Sale, error) {
 	}
 
 	// Got no sales back, all done.
-	fmt.Printf("\nGot no sales back, must have em' all.\n")
+	fmt.Printf("\n\nGot no sales back, must have em' all.\n\n")
 
-	return sales, err
+	return &sales, err
 }
 
 func salePage(version int64, domainPrefix, key,

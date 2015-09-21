@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/jtrotsky/spate/vend"
+	"github.com/jtrotsky/spate/writer"
 )
 
 // Manager contains the Vend client.
@@ -22,6 +23,7 @@ func (manager *Manager) Run() {
 	// Using log gives us an opening timestamp.
 	log.Printf("BEGIN\n")
 
+	fmt.Printf("\nGetting all sales.\n")
 	// Get all sales from the beginning of time.
 	allSales, err := manager.vend.Sales()
 	if err != nil {
@@ -29,5 +31,12 @@ func (manager *Manager) Run() {
 	}
 
 	log.Println("FIN.")
-	fmt.Printf("\n\n%v", allSales[0])
+	fmt.Printf("\nGot %d sales.\n", len(*allSales))
+
+	fmt.Println("Writing sales to CSV.")
+
+	err = writer.SalesReport(allSales, manager.vend.TimeZone)
+	if err != nil {
+		log.Fatalf("Failed writing sales to CSV: %s", err)
+	}
 }

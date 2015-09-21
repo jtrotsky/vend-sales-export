@@ -16,7 +16,7 @@ var (
 
 func main() {
 
-	v := vend.NewClient(token, domainPrefix)
+	v := vend.NewClient(token, domainPrefix, tz)
 	manager := manager.NewManager(v)
 
 	manager.Run()
