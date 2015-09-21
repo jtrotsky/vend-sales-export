@@ -111,6 +111,35 @@ func (c Client) Registers() (*[]Register, error) {
 	return &data, err
 }
 
+// Users gets all users from a store.
+func (c Client) Users() (*[]User, error) {
+
+	// Build the URL for the register page.
+	url := urlFactory(0, c.DomainPrefix, "users")
+
+	body, err := urlGet(c.Token, url)
+	if err != nil {
+		fmt.Printf("Error getting resource: %s", err)
+	}
+
+	// Decode the JSON into our defined product object.
+	response := UserPayload{}
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		fmt.Printf("\nError unmarshalling Vend sale payload: %s", err)
+		return &[]User{}, err
+	}
+
+	// Data is an array of product objects.
+	data := response.Data
+
+	// Do not expect more than one page of registers.
+	// TODO: Consider including check for multiple pages.
+	// version = response.Version["max"]
+
+	return &data, err
+}
+
 // urlGet performs a basic get request on a url with Vend API authentication.
 func urlGet(key, url string) ([]byte, error) {
 

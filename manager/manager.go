@@ -30,6 +30,13 @@ func (manager *Manager) Run() {
 		log.Fatalf("Failed to get registers: %s", err)
 	}
 
+	fmt.Printf("\nGetting users.\n")
+	// Get users.
+	users, err := manager.vend.Users()
+	if err != nil {
+		log.Fatalf("Failed to get users: %s", err)
+	}
+
 	fmt.Printf("\n\nGetting sales.\n")
 	// Get all sales from the beginning of time.
 	sales, err := manager.vend.Sales()
@@ -42,7 +49,7 @@ func (manager *Manager) Run() {
 
 	fmt.Println("Writing sales to CSV.")
 
-	err = writer.SalesReport(sales, registers, manager.vend.TimeZone)
+	err = writer.SalesReport(registers, users, sales, manager.vend.TimeZone)
 	if err != nil {
 		log.Fatalf("Failed writing sales to CSV: %s", err)
 	}
