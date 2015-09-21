@@ -33,7 +33,7 @@ func (c Client) Sales() (*[]Sale, error) {
 	sales = append(sales, s...)
 
 	for len(s) > 0 {
-		// Continue grabbing pages until we receive an empty one.
+		// Continue  pages until we receive an empty one.
 		s, v, err = salePage(v, c.DomainPrefix, c.Token, "sales")
 		if err != nil {
 			return nil, err
@@ -60,11 +60,11 @@ func salePage(version int64, domainPrefix, key,
 		fmt.Printf("Error getting resource: %s", err)
 	}
 
-	// Decode the JSON into our defined product object.
+	// Decode the JSON into our defined object.
 	response := SalePayload{}
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		fmt.Printf("\nError unmarshalling Vend sale payload: %s", err)
+		fmt.Printf("\nError unmarshalling payload: %s", err)
 		return nil, 0, err
 	}
 
@@ -191,6 +191,65 @@ func customerPage(version int64, domainPrefix, key,
 	// The customer version is a sequence number on each customer object. Knowing
 	// the highest number means we can continue grabbing results that are
 	// after that number until we have all of the customers.
+	version = response.Version["max"]
+
+	return data, version, err
+}
+
+// Products grabs and collates all products in pages of 10,000.
+func (c Client) Products() (*[]Product, error) {
+
+	products := []Product{}
+	p := []Product{}
+	var v int64
+
+	// v is a version that is used to get products by page.
+	// Here we get the first page.
+	p, v, err := productPage(1, c.DomainPrefix, c.Token, "products")
+	products = append(products, p...)
+
+	for len(p) > 0 {
+		// Continue grabbing pages until we receive an empty one.
+		p, v, err = productPage(v, c.DomainPrefix, c.Token, "products")
+		if err != nil {
+			return nil, err
+		}
+
+		// Each period is a page of 10,000.
+		fmt.Printf(".")
+
+		// Append page to list.
+		products = append(products, p...)
+	}
+
+	return &products, err
+}
+
+func productPage(version int64, domainPrefix, key,
+	resource string) ([]Product, int64, error) {
+
+	// Build the URL for the product page.
+	url := urlFactory(version, domainPrefix, resource)
+
+	body, err := urlGet(key, url)
+	if err != nil {
+		fmt.Printf("Error getting resource: %s", err)
+	}
+
+	// Decode the JSON into our defined object.
+	response := ProductPayload{}
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		fmt.Printf("\nError unmarshalling payload: %s", err)
+		return nil, 0, err
+	}
+
+	// Data is an array of product objects.
+	data := response.Data
+
+	// The product version is a sequence number on each product object. Knowing
+	// the highest number means we can continue grabbing results that are
+	// after that number until we have all of the products.
 	version = response.Version["max"]
 
 	return data, version, err
