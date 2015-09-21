@@ -82,6 +82,35 @@ func salePage(version int64, domainPrefix, key,
 	return data, version, err
 }
 
+// Registers gets all registers from a store.
+func (c Client) Registers() (*[]Register, error) {
+
+	// Build the URL for the register page.
+	url := urlFactory(0, c.DomainPrefix, "registers")
+
+	body, err := urlGet(c.Token, url)
+	if err != nil {
+		fmt.Printf("Error getting resource: %s", err)
+	}
+
+	// Decode the JSON into our defined product object.
+	response := RegisterPayload{}
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		fmt.Printf("\nError unmarshalling Vend sale payload: %s", err)
+		return &[]Register{}, err
+	}
+
+	// Data is an array of product objects.
+	data := response.Data
+
+	// Do not expect more than one page of registers.
+	// TODO: Consider including check for multiple pages.
+	// version = response.Version["max"]
+
+	return &data, err
+}
+
 // urlGet performs a basic get request on a url with Vend API authentication.
 func urlGet(key, url string) ([]byte, error) {
 
