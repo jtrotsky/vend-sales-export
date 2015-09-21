@@ -23,19 +23,26 @@ func (manager *Manager) Run() {
 	// Using log gives us an opening timestamp.
 	log.Printf("BEGIN\n")
 
-	fmt.Printf("\nGetting all sales.\n")
+	fmt.Printf("\nGetting registers.\n")
+	// Get registers.
+	registers, err := manager.vend.Registers()
+	if err != nil {
+		log.Fatalf("Failed to get registers: %s", err)
+	}
+
+	fmt.Printf("\n\nGetting sales.\n")
 	// Get all sales from the beginning of time.
-	allSales, err := manager.vend.Sales()
+	sales, err := manager.vend.Sales()
 	if err != nil {
 		log.Fatalf("Failed to get sales: %s", err)
 	}
 
 	log.Println("FIN.")
-	fmt.Printf("\nGot %d sales.\n", len(*allSales))
+	fmt.Printf("\nGot %d sales.\n", len(*sales))
 
 	fmt.Println("Writing sales to CSV.")
 
-	err = writer.SalesReport(allSales, manager.vend.TimeZone)
+	err = writer.SalesReport(sales, registers, manager.vend.TimeZone)
 	if err != nil {
 		log.Fatalf("Failed writing sales to CSV: %s", err)
 	}
