@@ -46,9 +46,6 @@ func (c Client) Sales() (*[]Sale, error) {
 		sales = append(sales, s...)
 	}
 
-	// Got no sales back, all done.
-	fmt.Printf("\n\nGot no sales back, must have em' all.\n\n")
-
 	return &sales, err
 }
 
@@ -138,6 +135,65 @@ func (c Client) Users() (*[]User, error) {
 	// version = response.Version["max"]
 
 	return &data, err
+}
+
+// Customers grabs and collates all customers in pages of 10,000.
+func (c Client) Customers() (*[]Customer, error) {
+
+	customers := []Customer{}
+	custy := []Customer{}
+	var v int64
+
+	// v is a version that is used to get customers by page.
+	// Here we get the first page.
+	custy, v, err := customerPage(1, c.DomainPrefix, c.Token, "customers")
+	customers = append(customers, custy...)
+
+	for len(custy) > 0 {
+		// Continue grabbing pages until we receive an empty one.
+		custy, v, err = customerPage(v, c.DomainPrefix, c.Token, "customers")
+		if err != nil {
+			return nil, err
+		}
+
+		// Each period is a page of 10,000 customers.
+		fmt.Printf(".")
+
+		// Append customer page to list of customers.
+		customers = append(customers, custy...)
+	}
+
+	return &customers, err
+}
+
+func customerPage(version int64, domainPrefix, key,
+	resource string) ([]Customer, int64, error) {
+
+	// Build the URL for the customer page.
+	url := urlFactory(version, domainPrefix, resource)
+
+	body, err := urlGet(key, url)
+	if err != nil {
+		fmt.Printf("Error getting resource: %s", err)
+	}
+
+	// Decode the JSON into our defined product object.
+	response := CustomerPayload{}
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		fmt.Printf("\nError unmarshalling Vend customer payload: %s", err)
+		return nil, 0, err
+	}
+
+	// Data is an array of product objects.
+	data := response.Data
+
+	// The customer version is a sequence number on each customer object. Knowing
+	// the highest number means we can continue grabbing results that are
+	// after that number until we have all of the customers.
+	version = response.Version["max"]
+
+	return data, version, err
 }
 
 // urlGet performs a basic get request on a url with Vend API authentication.
