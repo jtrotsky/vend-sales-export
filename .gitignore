@@ -1,0 +1,8 @@
+.DS_Store
+
+vce-dr
+
+*.csv
+*.log
+
+junk/*
