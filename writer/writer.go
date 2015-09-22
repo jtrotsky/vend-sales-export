@@ -49,8 +49,8 @@ func SalesReport(registers *[]vend.Register, users *[]vend.User,
 	headerLine = append(headerLine, "User")
 	headerLine = append(headerLine, "Status")
 	headerLine = append(headerLine, "Sku")
-	headerLine = append(headerLine, "Account Code")
-	headerLine = append(headerLine, "Purchasing Code")
+	// headerLine = append(headerLine, "Account Code")
+	// headerLine = append(headerLine, "Purchasing Code")
 
 	w.Write(headerLine)
 
@@ -152,13 +152,13 @@ func SalesReport(registers *[]vend.Register, users *[]vend.User,
 			}
 		}
 
-		// TODO: Check whether deleted users show.
 		var userName string
 		for _, user := range *users {
 			if *sale.UserID == *user.ID {
 				userName = *user.DisplayName
+				break
 			} else {
-				userName = "<Deleted User>"
+				userName = ""
 			}
 		}
 
@@ -187,8 +187,8 @@ func SalesReport(registers *[]vend.Register, users *[]vend.User,
 		record = append(record, userName)            // User
 		record = append(record, saleStatus)          // Status
 		record = append(record, "")                  // Sku
-		record = append(record, "")                  // AccountCodeSale
-		record = append(record, "")                  // AccountCodePurchase
+		// record = append(record, "")                  // AccountCodeSale
+		// record = append(record, "")                  // AccountCodePurchase
 		w.Write(record)
 
 		for _, lineitem := range *sale.LineItems {
@@ -229,8 +229,8 @@ func SalesReport(registers *[]vend.Register, users *[]vend.User,
 			productRecord[16] = ""          // User
 			productRecord[17] = ""          // Status
 			productRecord[18] = productSKU  // Sku
-			productRecord[19] = ""          // AccountCodeSale
-			productRecord[20] = ""          // AccountCodePurchase
+			// productRecord[19] = ""          // AccountCodeSale
+			// productRecord[20] = ""          // AccountCodePurchase
 			w.Write(productRecord)
 		}
 
@@ -261,8 +261,8 @@ func SalesReport(registers *[]vend.Register, users *[]vend.User,
 			paymentRecord[16] = ""       // User
 			paymentRecord[17] = ""       // Status
 			paymentRecord[18] = ""       // Sku
-			paymentRecord[19] = ""       // AccountCodeSale
-			paymentRecord[20] = ""       // AccountCodePurchase
+			// paymentRecord[19] = ""       // AccountCodeSale
+			// paymentRecord[20] = ""       // AccountCodePurchase
 
 			w.Write(paymentRecord)
 		}
