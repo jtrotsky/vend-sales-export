@@ -3,12 +3,6 @@ package vend
 
 import "time"
 
-// SalePayload contains sales data and versioning info.
-type SalePayload struct {
-	Data    []Sale           `json:"data,omitempty"`
-	Version map[string]int64 `json:"version,omitempty"`
-}
-
 // Sale is a basic sale object.
 type Sale struct {
 	ID              *string     `json:"id,omitempty"`

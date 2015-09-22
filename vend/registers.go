@@ -1,3 +1,4 @@
+// Package vend handles interactions with the Vend API.
 package vend
 
 import "time"

@@ -1,4 +1,4 @@
-// Package vend interacts with the Vend API.
+// Package vend handles interactions with the Vend API.
 package vend
 
 import "time"

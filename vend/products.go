@@ -1,13 +1,7 @@
+// Package vend handles interactions with the Vend API.
 package vend
 
 import "time"
-
-// ProductPayload is the standard format that data is returned in
-// which includes the max and min version numbers.
-type ProductPayload struct {
-	Data    []Product        `json:"data,omitempty"`
-	Version map[string]int64 `json:"version,omitempty"`
-}
 
 // Product is the basic Vend product structure.
 type Product struct {
