@@ -16,11 +16,12 @@ import (
 // exporting Vend sales history.
 func SalesReport(registers *[]vend.Register, users *[]vend.User,
 	customers *[]vend.Customer, products *[]vend.Product,
-	sales *[]vend.Sale, tz string) error {
+	sales *[]vend.Sale, domainPrefix, tz string) error {
 
 	// Create blank CSV file to be written to.
 	// File name will be the current time in unixtime.
-	fname := fmt.Sprintf("vend_sales_history_%v.csv", time.Now().Unix())
+	fname := fmt.Sprintf("%s_sales_history_%v.csv", domainPrefix,
+		time.Now().Unix())
 	f, err := os.Create(fmt.Sprintf("./%s", fname))
 	if err != nil {
 		log.Fatalf("Error creating CSV file: %s", err)
