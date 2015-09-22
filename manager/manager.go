@@ -23,35 +23,35 @@ func (manager *Manager) Run() {
 	// Using log gives us an opening timestamp.
 	log.Printf("BEGIN\n")
 
-	fmt.Printf("\nGetting registers.\n")
+	fmt.Printf("\nGrabbing registers.\n")
 	// Get registers.
 	registers, err := manager.vend.Registers()
 	if err != nil {
 		log.Fatalf("Failed to get registers: %s", err)
 	}
 
-	fmt.Printf("\n\nGetting users.\n")
+	fmt.Printf("\n\nGrabbing users.\n")
 	// Get users.
 	users, err := manager.vend.Users()
 	if err != nil {
 		log.Fatalf("Failed to get users: %s", err)
 	}
 
-	fmt.Printf("\n\nGetting customers.\n")
+	fmt.Printf("\n\nGrabbing customers.\n")
 	// Get customers.
 	customers, err := manager.vend.Customers()
 	if err != nil {
 		log.Fatalf("Failed to get customers: %s", err)
 	}
 
-	fmt.Printf("\n\nGetting products.\n")
+	fmt.Printf("\n\nGrabbing products.\n")
 	// Get all products from the beginning of time.
 	products, err := manager.vend.Products()
 	if err != nil {
 		log.Fatalf("Failed to get products: %s", err)
 	}
 
-	fmt.Printf("\n\nGetting sales.\n")
+	fmt.Printf("\n\nGrabbing sales.\n")
 	// Get all sales from the beginning of time.
 	sales, err := manager.vend.Sales()
 	if err != nil {

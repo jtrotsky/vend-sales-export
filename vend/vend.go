@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 )
@@ -38,9 +39,6 @@ func (c Client) Sales() (*[]Sale, error) {
 		if err != nil {
 			return nil, err
 		}
-
-		// Each period is a page of 10,000 sales.
-		fmt.Printf(".")
 
 		// Append sale page to list of sales.
 		sales = append(sales, s...)
@@ -141,26 +139,23 @@ func (c Client) Users() (*[]User, error) {
 func (c Client) Customers() (*[]Customer, error) {
 
 	customers := []Customer{}
-	custy := []Customer{}
+	cp := []Customer{}
 	var v int64
 
 	// v is a version that is used to get customers by page.
 	// Here we get the first page.
-	custy, v, err := customerPage(1, c.DomainPrefix, c.Token, "customers")
-	customers = append(customers, custy...)
+	cp, v, err := customerPage(1, c.DomainPrefix, c.Token, "customers")
+	customers = append(customers, cp...)
 
-	for len(custy) > 0 {
+	for len(cp) > 0 {
 		// Continue grabbing pages until we receive an empty one.
-		custy, v, err = customerPage(v, c.DomainPrefix, c.Token, "customers")
+		cp, v, err = customerPage(v, c.DomainPrefix, c.Token, "customers")
 		if err != nil {
 			return nil, err
 		}
 
-		// Each period is a page of 10,000 customers.
-		fmt.Printf(".")
-
 		// Append customer page to list of customers.
-		customers = append(customers, custy...)
+		customers = append(customers, cp...)
 	}
 
 	return &customers, err
@@ -215,9 +210,6 @@ func (c Client) Products() (*[]Product, error) {
 			return nil, err
 		}
 
-		// Each period is a page of 10,000.
-		fmt.Printf(".")
-
 		// Append page to list.
 		products = append(products, p...)
 	}
@@ -270,7 +262,7 @@ func urlGet(key, url string) ([]byte, error) {
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", key))
 	req.Header.Set("User-Agent", "Support-tool: spate")
 
-	fmt.Printf("\nGrabbing: %s", url)
+	log.Printf("Grabbing: %s\n", url)
 	// Doing the request.
 	res, err := client.Do(req)
 	if err != nil {
