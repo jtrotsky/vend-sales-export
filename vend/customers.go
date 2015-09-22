@@ -1,13 +1,7 @@
-// Package vend interacts with the Vend API.
+// Package vend handles interactions with the Vend API.
 package vend
 
 import "time"
-
-// CustomerPayload contains sales data and versioning info.
-type CustomerPayload struct {
-	Data    []Customer       `json:"data,omitempty"`
-	Version map[string]int64 `json:"version,omitempty"`
-}
 
 // Customer is a customer object.
 type Customer struct {

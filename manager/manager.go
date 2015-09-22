@@ -58,13 +58,14 @@ func (manager *Manager) Run() {
 		log.Fatalf("Failed to get sales: %s", err)
 	}
 
-	log.Println("-----------")
+	fmt.Println("")
 	log.Println("FIN.")
 
 	fmt.Printf("\nGot %d sales.\n", len(*sales))
 	fmt.Println("Writing sales to CSV.")
 
-	err = writer.SalesReport(registers, users, customers, products, sales, manager.vend.TimeZone)
+	err = writer.SalesReport(registers, users, customers, products,
+		sales, manager.vend.TimeZone)
 	if err != nil {
 		log.Fatalf("Failed writing sales to CSV: %s", err)
 	}
