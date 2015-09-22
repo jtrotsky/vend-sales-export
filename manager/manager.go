@@ -58,6 +58,7 @@ func (manager *Manager) Run() {
 		log.Fatalf("Failed to get sales: %s", err)
 	}
 
+	log.Println("-----------")
 	log.Println("FIN.")
 
 	fmt.Printf("\nGot %d sales.\n", len(*sales))

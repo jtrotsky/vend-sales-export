@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 )
 
 // Client contains API authentication details.
@@ -26,20 +27,36 @@ func (c Client) Sales() (*[]Sale, error) {
 
 	sales := []Sale{}
 	s := []Sale{}
+	data := []byte{}
 	var v int64
 
-	// v is a version that is used to get products by page.
+	// v is a version that is used to objects by page.
 	// Here we get the first page.
-	s, v, err := salePage(1, c.DomainPrefix, c.Token, "sales")
+	data, v, err := resourcePage(1, c.DomainPrefix, c.Token, "sales")
+
+	// Unmarshal payload into sales object.
+	err = json.Unmarshal(data, &s)
+
 	sales = append(sales, s...)
 
 	for len(s) > 0 {
+<<<<<<< HEAD
 		// Continue  pages until we receive an empty one.
 		s, v, err = salePage(v, c.DomainPrefix, c.Token, "sales")
+=======
+		// Continue grabbing pages until we receive an empty one.
+		data, v, err = resourcePage(v, c.DomainPrefix, c.Token, "sales")
+>>>>>>> consolidate-getting-resource-pages
 		if err != nil {
 			return nil, err
 		}
 
+<<<<<<< HEAD
+=======
+		// Unmarshal payload into sales object.
+		err = json.Unmarshal(data, &s)
+
+>>>>>>> consolidate-getting-resource-pages
 		// Append sale page to list of sales.
 		sales = append(sales, s...)
 	}
@@ -47,8 +64,8 @@ func (c Client) Sales() (*[]Sale, error) {
 	return &sales, err
 }
 
-func salePage(version int64, domainPrefix, key,
-	resource string) ([]Sale, int64, error) {
+func resourcePage(version int64, domainPrefix, key,
+	resource string) ([]byte, int64, error) {
 
 	// Build the URL for the product page.
 	url := urlFactory(version, domainPrefix, resource)
@@ -58,8 +75,13 @@ func salePage(version int64, domainPrefix, key,
 		fmt.Printf("Error getting resource: %s", err)
 	}
 
+<<<<<<< HEAD
 	// Decode the JSON into our defined object.
 	response := SalePayload{}
+=======
+	// Decode the raw JSON.
+	response := Payload{}
+>>>>>>> consolidate-getting-resource-pages
 	err = json.Unmarshal(body, &response)
 	if err != nil {
 		fmt.Printf("\nError unmarshalling payload: %s", err)
@@ -140,20 +162,43 @@ func (c Client) Customers() (*[]Customer, error) {
 
 	customers := []Customer{}
 	cp := []Customer{}
+<<<<<<< HEAD
+=======
+	data := []byte{}
+>>>>>>> consolidate-getting-resource-pages
 	var v int64
 
 	// v is a version that is used to get customers by page.
 	// Here we get the first page.
+<<<<<<< HEAD
 	cp, v, err := customerPage(1, c.DomainPrefix, c.Token, "customers")
 	customers = append(customers, cp...)
 
 	for len(cp) > 0 {
 		// Continue grabbing pages until we receive an empty one.
 		cp, v, err = customerPage(v, c.DomainPrefix, c.Token, "customers")
+=======
+	data, v, err := resourcePage(1, c.DomainPrefix, c.Token, "customers")
+
+	// Unmarshal payload into sales object.
+	err = json.Unmarshal(data, &cp)
+
+	customers = append(customers, cp...)
+
+	for len(cp) > 0 {
+		// Continue grabbing pages until we receive an empty one.
+		data, v, err = resourcePage(v, c.DomainPrefix, c.Token, "customers")
+>>>>>>> consolidate-getting-resource-pages
 		if err != nil {
 			return nil, err
 		}
 
+<<<<<<< HEAD
+=======
+		// Unmarshal payload into sales object.
+		err = json.Unmarshal(data, &cp)
+
+>>>>>>> consolidate-getting-resource-pages
 		// Append customer page to list of customers.
 		customers = append(customers, cp...)
 	}
@@ -161,6 +206,7 @@ func (c Client) Customers() (*[]Customer, error) {
 	return &customers, err
 }
 
+<<<<<<< HEAD
 func customerPage(version int64, domainPrefix, key,
 	resource string) ([]Customer, int64, error) {
 
@@ -247,6 +293,8 @@ func productPage(version int64, domainPrefix, key,
 	return data, version, err
 }
 
+=======
+>>>>>>> consolidate-getting-resource-pages
 // urlGet performs a basic get request on a url with Vend API authentication.
 func urlGet(key, url string) ([]byte, error) {
 
@@ -294,15 +342,18 @@ func ResponseCheck(statusCode int) {
 	case 401:
 		fmt.Printf("\nAccess denied - check personal API token. Status: %d",
 			statusCode)
+		os.Exit(0)
 	case 404:
 		fmt.Printf("\nURL not found - check domain prefix. Status: %d",
 			statusCode)
+		os.Exit(0)
 	case 429:
 		fmt.Printf("\nRate limited by the Vend API :S Status: %d",
 			statusCode)
 	default:
 		fmt.Printf("\nGot an unknown status code - Google it. Status: %d",
 			statusCode)
+		os.Exit(0)
 	}
 }
 
