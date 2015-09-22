@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 )
 
 // Client contains API authentication details.
@@ -25,22 +26,27 @@ func (c Client) Sales() (*[]Sale, error) {
 
 	sales := []Sale{}
 	s := []Sale{}
+	data := []byte{}
 	var v int64
 
-	// v is a version that is used to get products by page.
+	// v is a version that is used to objects by page.
 	// Here we get the first page.
-	s, v, err := salePage(1, c.DomainPrefix, c.Token, "sales")
+	data, v, err := resourcePage(1, c.DomainPrefix, c.Token, "sales")
+
+	// Unmarshal payload into sales object.
+	err = json.Unmarshal(data, &s)
+
 	sales = append(sales, s...)
 
 	for len(s) > 0 {
 		// Continue grabbing pages until we receive an empty one.
-		s, v, err = salePage(v, c.DomainPrefix, c.Token, "sales")
+		data, v, err = resourcePage(v, c.DomainPrefix, c.Token, "sales")
 		if err != nil {
 			return nil, err
 		}
 
-		// Each period is a page of 10,000 sales.
-		fmt.Printf(".")
+		// Unmarshal payload into sales object.
+		err = json.Unmarshal(data, &s)
 
 		// Append sale page to list of sales.
 		sales = append(sales, s...)
@@ -49,8 +55,8 @@ func (c Client) Sales() (*[]Sale, error) {
 	return &sales, err
 }
 
-func salePage(version int64, domainPrefix, key,
-	resource string) ([]Sale, int64, error) {
+func resourcePage(version int64, domainPrefix, key,
+	resource string) ([]byte, int64, error) {
 
 	// Build the URL for the product page.
 	url := urlFactory(version, domainPrefix, resource)
@@ -60,8 +66,8 @@ func salePage(version int64, domainPrefix, key,
 		fmt.Printf("Error getting resource: %s", err)
 	}
 
-	// Decode the JSON into our defined product object.
-	response := SalePayload{}
+	// Decode the raw JSON.
+	response := Payload{}
 	err = json.Unmarshal(body, &response)
 	if err != nil {
 		fmt.Printf("\nError unmarshalling Vend sale payload: %s", err)
@@ -141,59 +147,34 @@ func (c Client) Users() (*[]User, error) {
 func (c Client) Customers() (*[]Customer, error) {
 
 	customers := []Customer{}
-	custy := []Customer{}
+	cp := []Customer{}
+	data := []byte{}
 	var v int64
 
 	// v is a version that is used to get customers by page.
 	// Here we get the first page.
-	custy, v, err := customerPage(1, c.DomainPrefix, c.Token, "customers")
-	customers = append(customers, custy...)
+	data, v, err := resourcePage(1, c.DomainPrefix, c.Token, "customers")
 
-	for len(custy) > 0 {
+	// Unmarshal payload into sales object.
+	err = json.Unmarshal(data, &cp)
+
+	customers = append(customers, cp...)
+
+	for len(cp) > 0 {
 		// Continue grabbing pages until we receive an empty one.
-		custy, v, err = customerPage(v, c.DomainPrefix, c.Token, "customers")
+		data, v, err = resourcePage(v, c.DomainPrefix, c.Token, "customers")
 		if err != nil {
 			return nil, err
 		}
 
-		// Each period is a page of 10,000 customers.
-		fmt.Printf(".")
+		// Unmarshal payload into sales object.
+		err = json.Unmarshal(data, &cp)
 
 		// Append customer page to list of customers.
-		customers = append(customers, custy...)
+		customers = append(customers, cp...)
 	}
 
 	return &customers, err
-}
-
-func customerPage(version int64, domainPrefix, key,
-	resource string) ([]Customer, int64, error) {
-
-	// Build the URL for the customer page.
-	url := urlFactory(version, domainPrefix, resource)
-
-	body, err := urlGet(key, url)
-	if err != nil {
-		fmt.Printf("Error getting resource: %s", err)
-	}
-
-	// Decode the JSON into our defined product object.
-	response := CustomerPayload{}
-	err = json.Unmarshal(body, &response)
-	if err != nil {
-		fmt.Printf("\nError unmarshalling Vend customer payload: %s", err)
-		return nil, 0, err
-	}
-
-	// Data is an array of product objects.
-	data := response.Data
-
-	// The customer version is a sequence number on each customer object. Knowing
-	// the highest number means we can continue grabbing results that are
-	// after that number until we have all of the customers.
-	version = response.Version["max"]
-
-	return data, version, err
 }
 
 // urlGet performs a basic get request on a url with Vend API authentication.
@@ -243,15 +224,18 @@ func ResponseCheck(statusCode int) {
 	case 401:
 		fmt.Printf("\nAccess denied - check personal API token. Status: %d",
 			statusCode)
+		os.Exit(0)
 	case 404:
 		fmt.Printf("\nURL not found - check domain prefix. Status: %d",
 			statusCode)
+		os.Exit(0)
 	case 429:
 		fmt.Printf("\nRate limited by the Vend API :S Status: %d",
 			statusCode)
 	default:
 		fmt.Printf("\nGot an unknown status code - Google it. Status: %d",
 			statusCode)
+		os.Exit(0)
 	}
 }
 
