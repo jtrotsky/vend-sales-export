@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"time"
 )
 
 // Client contains API authentication details.
@@ -150,7 +151,7 @@ func (c Client) Products() (*[]Product, error) {
 }
 
 // Sales grabs and collates all sales in pages of 10,000.
-func (c Client) Sales() (*[]Sale, error) {
+func (c Client) Sales() ([]Sale, error) {
 
 	sales := []Sale{}
 	s := []Sale{}
@@ -180,7 +181,18 @@ func (c Client) Sales() (*[]Sale, error) {
 		sales = append(sales, s...)
 	}
 
-	return &sales, err
+	// Use sale date comparison for sorting.
+	saleDT := func(p1, p2 *Sale) bool {
+		return p1.SaleDateUnix > p2.SaleDateUnix
+	}
+
+	// Sort sales by the datetime criteria.
+	By(saleDT).Sort(sales)
+
+	// Change sort direction to descending.
+	// salesDesc := sort.Reverse(sales)
+
+	return sales, err
 }
 
 func resourcePage(version int64, domainPrefix, key,
@@ -292,4 +304,30 @@ func urlFactory(version int64, domainPrefix, resource string) string {
 
 	address += fmt.Sprintf("%s?%s", resource, query.Encode())
 	return address
+}
+
+// ParseVendDT converts the default Vend timestamp string into a
+// go Time.time value.
+func ParseVendDT(dt, tz string) time.Time {
+
+	// Load store's timezone as location.
+	loc, err := time.LoadLocation(tz)
+	if err != nil {
+		fmt.Printf("Error loading timezone as location: %s", err)
+	}
+
+	// Default Vend timedate layout.
+	const longForm = "2006-01-02T15:04:05Z07:00"
+	t, err := time.Parse(longForm, dt)
+	if err != nil {
+		log.Fatalf("Error parsing time into deafult timestamp: %s", err)
+	}
+
+	// Time in retailer's timezone.
+	dtWithTimezone := t.In(loc)
+
+	return dtWithTimezone
+
+	// Time string with timezone removed.
+	// timeStr := timeLoc.String()[0:19]
 }
