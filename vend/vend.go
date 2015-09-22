@@ -280,7 +280,7 @@ func urlFactory(version int64, domainPrefix, resource string) string {
 	// TODO: check if deleted is working for 2.0 yet. (appears not to be)
 	const (
 		pageSize = 10000
-		deleted  = false
+		deleted  = true
 	)
 
 	// Using 2.x Endpoint.
