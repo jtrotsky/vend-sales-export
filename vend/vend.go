@@ -181,6 +181,14 @@ func (c Client) Sales() ([]Sale, error) {
 		sales = append(sales, s...)
 	}
 
+	// Populate saledateunix for each sale so that
+	// we can use it to order them.
+	for _, sale := range sales {
+		dt := sale.SaleDate
+		dtInLoc := ParseVendDT(*dt, c.TimeZone)
+		sale.SaleDateUnix = dtInLoc.Unix()
+	}
+
 	// Use sale date comparison for sorting.
 	saleDT := func(p1, p2 *Sale) bool {
 		return p1.SaleDateUnix > p2.SaleDateUnix
