@@ -21,7 +21,6 @@ type Sale struct {
 	CreatedAt       *time.Time  `json:"created_at,omitempty"`
 	UpdatedAt       *time.Time  `json:"updated_at,omitempty"`
 	SaleDate        *string     `json:"sale_date,omitempty"`
-	SaleDateUnix    int64       `json:"-,omitempty"`
 	DeletedAt       *time.Time  `json:"deleted_at,omitempty"`
 	TotalPrice      *float64    `json:"total_price,omitempty"`
 	TotalLoyalty    *float64    `json:"total_loyalty,omitempty"`
