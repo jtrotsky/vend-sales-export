@@ -181,6 +181,14 @@ func (c Client) Sales() ([]Sale, error) {
 		sales = append(sales, s...)
 	}
 
+	// Populate saledateunix for each sale so that
+	// we can use it to order them.
+	for _, sale := range sales {
+		dt := sale.SaleDate
+		dtInLoc := ParseVendDT(*dt, c.TimeZone)
+		sale.SaleDateUnix = dtInLoc.Unix()
+	}
+
 	// Use sale date comparison for sorting.
 	saleDT := func(p1, p2 *Sale) bool {
 		return p1.SaleDateUnix > p2.SaleDateUnix
@@ -293,14 +301,32 @@ func urlFactory(version int64, domainPrefix, resource string) string {
 	const (
 		pageSize = 10000
 		deleted  = true
+		// date_from =
+		// date_to =
+		// resType        = "sales"
+		// orderBy        = "date"
+		// orderDirection = "desc"
 	)
 
 	// Using 2.x Endpoint.
 	address := fmt.Sprintf("https://%s.vendhq.com/api/2.0/", domainPrefix)
 	query := url.Values{}
-	query.Add("deleted", fmt.Sprintf("%t", deleted))
-	query.Add("page_size", fmt.Sprintf("%d", pageSize))
+
 	query.Add("after", fmt.Sprintf("%d", version))
+	query.Add("page_size", fmt.Sprintf("%d", pageSize))
+
+	// Using elastic search for sales.
+	// if resource == "sales" {
+	// 	query.Add("type", fmt.Sprintf("%s", resType))
+	// 	query.Add("order_by", fmt.Sprintf("%s", orderBy))
+	// 	query.Add("order_direction", fmt.Sprintf("%s", orderDirection))
+	// 	address += fmt.Sprintf("search?%s", query.Encode())
+	// return address
+	// }
+
+	// PageSize is not a valid parameter for the search endpoint.
+	// query.Add("page_size", fmt.Sprintf("%d", pageSize))
+	query.Add("deleted", fmt.Sprintf("%t", deleted))
 
 	address += fmt.Sprintf("%s?%s", resource, query.Encode())
 	return address
