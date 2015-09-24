@@ -221,7 +221,7 @@ func SalesReport(registers *[]vend.Register, users *[]vend.User,
 			}
 
 			productRecord := record
-			productRecord[0] = ""           // Sale Date
+			productRecord[0] = dtStr        // Sale Date
 			productRecord[1] = ""           // Invoice Number
 			productRecord[2] = "Sale Line"  // Line Type
 			productRecord[3] = ""           // Customer Code
@@ -253,7 +253,7 @@ func SalesReport(registers *[]vend.Register, users *[]vend.User,
 			// label := *payment.Label
 
 			paymentRecord := record
-			paymentRecord[0] = ""        // Sale Date
+			paymentRecord[0] = dtStr     // Sale Date
 			paymentRecord[1] = ""        // Invoice Number
 			paymentRecord[2] = "Payment" // Line Type
 			paymentRecord[3] = ""        // Customer Code
