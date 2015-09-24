@@ -181,6 +181,14 @@ func (c Client) Sales() ([]Sale, error) {
 		sales = append(sales, s...)
 	}
 
+	// Populate saledateunix for each sale so that
+	// we can use it to order them.
+	for _, sale := range sales {
+		dt := sale.SaleDate
+		dtInLoc := ParseVendDT(*dt, c.TimeZone)
+		sale.SaleDateUnix = dtInLoc.Unix()
+	}
+
 	// Use sale date comparison for sorting.
 	saleDT := func(p1, p2 *Sale) bool {
 		return p1.SaleDateUnix > p2.SaleDateUnix
@@ -289,7 +297,6 @@ func ResponseCheck(statusCode int) {
 // urlFactory creates a Vend API 2.0 URL based on a resource.
 func urlFactory(version int64, domainPrefix, resource string) string {
 	// Page size is capped at ten thousand.
-	// TODO: check if deleted is working for 2.0 yet. (appears not to be)
 	const (
 		pageSize = 10000
 		deleted  = true
@@ -298,10 +305,9 @@ func urlFactory(version int64, domainPrefix, resource string) string {
 	// Using 2.x Endpoint.
 	address := fmt.Sprintf("https://%s.vendhq.com/api/2.0/", domainPrefix)
 	query := url.Values{}
-	query.Add("deleted", fmt.Sprintf("%t", deleted))
-	query.Add("page_size", fmt.Sprintf("%d", pageSize))
 	query.Add("after", fmt.Sprintf("%d", version))
-
+	query.Add("page_size", fmt.Sprintf("%d", pageSize))
+	query.Add("deleted", fmt.Sprintf("%t", deleted))
 	address += fmt.Sprintf("%s?%s", resource, query.Encode())
 	return address
 }
