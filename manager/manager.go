@@ -65,7 +65,7 @@ func (manager *Manager) Run() {
 	fmt.Println("Writing sales to CSV.")
 
 	err = writer.SalesReport(registers, users, customers, products,
-		&sales, manager.vend.DomainPrefix, manager.vend.TimeZone)
+		sales, manager.vend.DomainPrefix, manager.vend.TimeZone)
 	if err != nil {
 		log.Fatalf("Failed writing sales to CSV: %s", err)
 	}

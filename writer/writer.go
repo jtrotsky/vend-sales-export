@@ -16,7 +16,7 @@ import (
 // exporting Vend sales history.
 func SalesReport(registers *[]vend.Register, users *[]vend.User,
 	customers *[]vend.Customer, products *[]vend.Product,
-	sales *[]vend.Sale, domainPrefix, tz string) error {
+	sales []vend.Sale, domainPrefix, tz string) error {
 
 	// Create blank CSV file to be written to.
 	// File name will be the current time in unixtime.
@@ -51,12 +51,10 @@ func SalesReport(registers *[]vend.Register, users *[]vend.User,
 	headerLine = append(headerLine, "User")
 	headerLine = append(headerLine, "Status")
 	headerLine = append(headerLine, "Product Sku")
-	// headerLine = append(headerLine, "Account Code")
-	// headerLine = append(headerLine, "Purchasing Code")
 
 	w.Write(headerLine)
 
-	for _, sale := range *sales {
+	for _, sale := range sales {
 
 		// Prepare data to be written to CSV.
 

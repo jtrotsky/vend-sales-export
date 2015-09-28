@@ -87,12 +87,11 @@ func (c Client) Customers() (*[]Customer, error) {
 
 	customers := []Customer{}
 	cp := []Customer{}
-	data := []byte{}
 	var v int64
 
 	// v is a version that is used to get customers by page.
 	// Here we get the first page.
-	data, v, err := resourcePage(1, c.DomainPrefix, c.Token, "customers")
+	data, v, err := resourcePage(0, c.DomainPrefix, c.Token, "customers")
 
 	// Unmarshal payload into sales object.
 	err = json.Unmarshal(data, &cp)
@@ -100,6 +99,8 @@ func (c Client) Customers() (*[]Customer, error) {
 	customers = append(customers, cp...)
 
 	for len(cp) > 0 {
+		cp = []Customer{}
+
 		// Continue grabbing pages until we receive an empty one.
 		data, v, err = resourcePage(v, c.DomainPrefix, c.Token, "customers")
 		if err != nil {
@@ -126,7 +127,7 @@ func (c Client) Products() (*[]Product, error) {
 
 	// v is a version that is used to get products by page.
 	// Here we get the first page.
-	data, v, err := resourcePage(1, c.DomainPrefix, c.Token, "products")
+	data, v, err := resourcePage(0, c.DomainPrefix, c.Token, "products")
 
 	// Unmarshal payload into sales object.
 	err = json.Unmarshal(data, &p)
@@ -134,6 +135,8 @@ func (c Client) Products() (*[]Product, error) {
 	products = append(products, p...)
 
 	for len(p) > 0 {
+		p = []Product{}
+
 		// Continue grabbing pages until we receive an empty one.
 		data, v, err = resourcePage(v, c.DomainPrefix, c.Token, "products")
 		if err != nil {
@@ -153,21 +156,24 @@ func (c Client) Products() (*[]Product, error) {
 // Sales grabs and collates all sales in pages of 10,000.
 func (c Client) Sales() ([]Sale, error) {
 
-	sales := []Sale{}
-	s := []Sale{}
-	data := []byte{}
+	var sales []Sale
+	var s []Sale
 	var v int64
 
 	// v is a version that is used to objects by page.
 	// Here we get the first page.
-	data, v, err := resourcePage(1, c.DomainPrefix, c.Token, "sales")
+	data, v, err := resourcePage(0, c.DomainPrefix, c.Token, "sales")
 
 	// Unmarshal payload into sales object.
 	err = json.Unmarshal(data, &s)
 
+	// Append page to list.
 	sales = append(sales, s...)
 
-	for len(s) > 0 {
+	// NOTE: Turns out empty response is 2bytes.
+	for len(data) > 2 {
+		s = []Sale{}
+
 		// Continue grabbing pages until we receive an empty one.
 		data, v, err = resourcePage(v, c.DomainPrefix, c.Token, "sales")
 		if err != nil {
@@ -279,7 +285,8 @@ func ResponseCheck(statusCode int) {
 func urlFactory(version int64, domainPrefix, resource string) string {
 	// Page size is capped at ten thousand.
 	const (
-		pageSize = 10000
+		// NOTE: Only get 500 back so might as well set it explicitly.
+		pageSize = 500
 		deleted  = true
 	)
 
