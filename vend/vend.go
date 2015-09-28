@@ -154,7 +154,7 @@ func (c Client) Products() (*[]Product, error) {
 }
 
 // Sales grabs and collates all sales in pages of 10,000.
-func (c Client) Sales() ([]Sale, error) {
+func (c Client) Sales() (*[]Sale, error) {
 
 	var sales []Sale
 	var s []Sale
@@ -187,7 +187,7 @@ func (c Client) Sales() ([]Sale, error) {
 		sales = append(sales, s...)
 	}
 
-	return sales, err
+	return &sales, err
 }
 
 func resourcePage(version int64, domainPrefix, key,
@@ -285,8 +285,7 @@ func ResponseCheck(statusCode int) {
 func urlFactory(version int64, domainPrefix, resource string) string {
 	// Page size is capped at ten thousand.
 	const (
-		// NOTE: Only get 500 back so might as well set it explicitly.
-		pageSize = 500
+		pageSize = 10000
 		deleted  = true
 	)
 

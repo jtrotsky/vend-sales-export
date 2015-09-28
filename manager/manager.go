@@ -61,7 +61,7 @@ func (manager *Manager) Run() {
 	fmt.Println("")
 	log.Println("FIN.")
 
-	fmt.Printf("\nGot %d sales.\n", len(sales))
+	fmt.Printf("\nGot %d sales.\n", len(*sales))
 	fmt.Println("Writing sales to CSV.")
 
 	err = writer.SalesReport(registers, users, customers, products,
