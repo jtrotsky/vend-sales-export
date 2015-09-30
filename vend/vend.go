@@ -283,7 +283,8 @@ func ResponseCheck(statusCode int) {
 
 // urlFactory creates a Vend API 2.0 URL based on a resource.
 func urlFactory(version int64, domainPrefix, resource string) string {
-	// Page size is capped at ten thousand.
+	// Page size is capped at ten thousand for all endpoints except sales
+	// which it is capped at five hundred.
 	const (
 		pageSize = 10000
 		deleted  = true
