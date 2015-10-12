@@ -4,17 +4,17 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/jtrotsky/spate/vend"
+	"github.com/jtrotsky/govend/client"
 	"github.com/jtrotsky/spate/writer"
 )
 
 // Manager contains the Vend client.
 type Manager struct {
-	vend vend.Client
+	vend client.Client
 }
 
 // NewManager creates an instance of manager.
-func NewManager(vend vend.Client) *Manager {
+func NewManager(vend client.Client) *Manager {
 	return &Manager{vend}
 }
 

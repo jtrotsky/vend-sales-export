@@ -4,8 +4,8 @@ import (
 	"flag"
 	"strings"
 
+	"github.com/jtrotsky/govend/client"
 	"github.com/jtrotsky/spate/manager"
-	"github.com/jtrotsky/spate/vend"
 )
 
 var (
@@ -16,7 +16,7 @@ var (
 
 func main() {
 
-	v := vend.NewClient(token, domainPrefix, tz)
+	v := client.NewClient(token, domainPrefix, tz)
 	manager := manager.NewManager(v)
 
 	manager.Run()
