@@ -9,7 +9,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jtrotsky/govend/client"
 	"github.com/jtrotsky/govend/vend"
 )
 
@@ -71,7 +70,7 @@ func SalesReport(registers *[]vend.Register, users *[]vend.User,
 
 		// Takes a Vend timestamp string as input and converts it to
 		// a Go Time.time value.
-		dtInLoc := client.ParseVendDT(*sale.SaleDate, tz)
+		dtInLoc := vend.ParseVendDT(*sale.SaleDate, tz)
 
 		// Time string with timezone removed.
 		dtStr := dtInLoc.String()[0:19]
