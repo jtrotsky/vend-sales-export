@@ -46,7 +46,7 @@ func (manager *Manager) Run() {
 
 	fmt.Printf("\n\nGrabbing products.\n")
 	// Get all products from the beginning of time.
-	products, err := manager.vend.Products()
+	products, _, err := manager.vend.Products()
 	if err != nil {
 		log.Fatalf("Failed to get products: %s", err)
 	}
