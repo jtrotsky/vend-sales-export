@@ -64,7 +64,7 @@ func SalesReport(registers *[]vend.Register, users *[]vend.User,
 		}
 
 		// Do not include sales with status of "OPEN"
-		if *sale.Status == "OPEN" {
+		if sale.Status != nil && *sale.Status == "OPEN" {
 			continue
 		}
 
@@ -163,7 +163,7 @@ func SalesReport(registers *[]vend.Register, users *[]vend.User,
 
 		var userName string
 		for _, user := range *users {
-			if *sale.UserID == *user.ID {
+			if sale.UserID != nil && *sale.UserID == *user.ID {
 				userName = *user.DisplayName
 				break
 			} else {
