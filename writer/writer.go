@@ -156,6 +156,7 @@ func SalesReport(registers *[]vend.Register, users *[]vend.User,
 		for _, register := range *registers {
 			if *sale.RegisterID == *register.ID {
 				registerName = *register.Name
+				// Append (Deleted) to name if register is deleted.
 				if register.DeletedAt != nil {
 					registerName += " (Deleted)"
 				}
