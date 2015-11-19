@@ -150,8 +150,6 @@ func SalesReport(registers *[]vend.Register, users *[]vend.User,
 		// saleDetails
 		// TODO: Confirm what this is.
 
-		// TODO: Check how to see deleted registers.
-		// should use deleted user names anyway, but with brackets maybe?
 		var registerName string
 		for _, register := range *registers {
 			if *sale.RegisterID == *register.ID {
