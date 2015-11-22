@@ -33,6 +33,7 @@ func SalesReport(registers *[]vend.Register, users *[]vend.User,
 
 	var headerLine []string
 	headerLine = append(headerLine, "Sale Date")
+	headerLine = append(headerLine, "Sale Time")
 	headerLine = append(headerLine, "Invoice Number")
 	headerLine = append(headerLine, "Line Type")
 	headerLine = append(headerLine, "Customer Code")
@@ -74,6 +75,12 @@ func SalesReport(registers *[]vend.Register, users *[]vend.User,
 
 		// Time string with timezone removed.
 		dtStr := dtInLoc.String()[0:19]
+
+		// Split time and date on space.
+		// Example date/time string: 2015-07-01 07:03:22
+		var dateStr, timeStr string
+		dateStr = dtStr[0:10]
+		timeStr = dtStr[10:19]
 
 		var invoiceNumber string
 		if sale.InvoiceNumber != nil {
@@ -180,7 +187,8 @@ func SalesReport(registers *[]vend.Register, users *[]vend.User,
 		}
 
 		var record []string
-		record = append(record, dtStr)               // Date
+		record = append(record, dateStr)             // Date
+		record = append(record, timeStr)             // Time
 		record = append(record, invoiceNumber)       // Receipt Number
 		record = append(record, "Sale")              // Line Type
 		record = append(record, customerCode)        // Customer Code
@@ -222,25 +230,26 @@ func SalesReport(registers *[]vend.Register, users *[]vend.User,
 			}
 
 			productRecord := record
-			productRecord[0] = dtStr        // Sale Date
-			productRecord[1] = ""           // Invoice Number
-			productRecord[2] = "Sale Line"  // Line Type
-			productRecord[3] = ""           // Customer Code
-			productRecord[4] = ""           // Customer Company Name
-			productRecord[5] = ""           // Customer Name
-			productRecord[6] = ""           // TODO: line note from the product?
-			productRecord[7] = quantity     // Quantity
-			productRecord[8] = price        // Subtotal
-			productRecord[9] = tax          // Sales Tax
-			productRecord[10] = discount    // Discount
-			productRecord[11] = loyalty     // Loyalty
-			productRecord[12] = total       // Total
-			productRecord[13] = ""          // Paid
-			productRecord[14] = productName // Details
-			productRecord[15] = ""          // Register
-			productRecord[16] = ""          // User
-			productRecord[17] = ""          // Status
-			productRecord[18] = productSKU  // Sku
+			productRecord[0] = dateStr      // Sale Date
+			productRecord[1] = timeStr      // Sale Time
+			productRecord[2] = ""           // Invoice Number
+			productRecord[3] = "Sale Line"  // Line Type
+			productRecord[4] = ""           // Customer Code
+			productRecord[5] = ""           // Customer Company Name
+			productRecord[6] = ""           // Customer Name
+			productRecord[7] = ""           // TODO: line note from the product?
+			productRecord[8] = quantity     // Quantity
+			productRecord[9] = price        // Subtotal
+			productRecord[10] = tax         // Sales Tax
+			productRecord[11] = discount    // Discount
+			productRecord[12] = loyalty     // Loyalty
+			productRecord[13] = total       // Total
+			productRecord[14] = ""          // Paid
+			productRecord[15] = productName // Details
+			productRecord[16] = ""          // Register
+			productRecord[17] = ""          // User
+			productRecord[18] = ""          // Status
+			productRecord[19] = productSKU  // Sku
 			// productRecord[19] = ""          // AccountCodeSale
 			// productRecord[20] = ""          // AccountCodePurchase
 			w.Write(productRecord)
@@ -254,25 +263,26 @@ func SalesReport(registers *[]vend.Register, users *[]vend.User,
 			// label := *payment.Label
 
 			paymentRecord := record
-			paymentRecord[0] = dtStr     // Sale Date
-			paymentRecord[1] = ""        // Invoice Number
-			paymentRecord[2] = "Payment" // Line Type
-			paymentRecord[3] = ""        // Customer Code
-			paymentRecord[4] = ""        // Customer Company Name
-			paymentRecord[5] = ""        // Customer Name
-			paymentRecord[6] = ""        // TODO: line note
-			paymentRecord[7] = ""        // Quantity
-			paymentRecord[8] = ""        // Subtotal
-			paymentRecord[9] = ""        // Sales Tax
-			paymentRecord[10] = ""       // Discount
-			paymentRecord[11] = ""       // Loyalty
-			paymentRecord[12] = ""       // Total
-			paymentRecord[13] = paid     // Paid
-			paymentRecord[14] = name     //  Details
-			paymentRecord[15] = ""       // Register
-			paymentRecord[16] = ""       // User
-			paymentRecord[17] = ""       // Status
-			paymentRecord[18] = ""       // Sku
+			paymentRecord[0] = dateStr   // Sale Date
+			paymentRecord[1] = timeStr   // Sale Time
+			paymentRecord[2] = ""        // Invoice Number
+			paymentRecord[3] = "Payment" // Line Type
+			paymentRecord[4] = ""        // Customer Code
+			paymentRecord[5] = ""        // Customer Company Name
+			paymentRecord[6] = ""        // Customer Name
+			paymentRecord[7] = ""        // TODO: line note
+			paymentRecord[8] = ""        // Quantity
+			paymentRecord[9] = ""        // Subtotal
+			paymentRecord[10] = ""       // Sales Tax
+			paymentRecord[11] = ""       // Discount
+			paymentRecord[12] = ""       // Loyalty
+			paymentRecord[13] = ""       // Total
+			paymentRecord[14] = paid     // Paid
+			paymentRecord[15] = name     //  Details
+			paymentRecord[16] = ""       // Register
+			paymentRecord[17] = ""       // User
+			paymentRecord[18] = ""       // Status
+			paymentRecord[19] = ""       // Sku
 			// paymentRecord[19] = ""       // AccountCodeSale
 			// paymentRecord[20] = ""       // AccountCodePurchase
 
