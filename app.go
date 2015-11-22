@@ -37,6 +37,4 @@ func init() {
 	// Split DomainPrefix on the "." period character then grab the first part.
 	parts := strings.Split(domainPrefix, ".")
 	domainPrefix = parts[0]
-
-	// TODO: Process timezone info.
 }
