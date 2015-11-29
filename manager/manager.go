@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/jtrotsky/govend/vend"
+	"github.com/jtrotsky/spate/vendapi"
 	"github.com/jtrotsky/spate/writer"
 )
 
@@ -52,21 +53,23 @@ func (manager *Manager) Run() {
 	}
 
 	fmt.Printf("\n\nGrabbing sales.\n")
-	// Get all sales from the beginning of time.
-	sales, err := manager.vend.Sales()
-	if err != nil {
-		log.Fatalf("Failed to get sales: %s", err)
-	}
-
-	fmt.Println("")
-	log.Println("FIN.")
-
-	fmt.Printf("\nGot %d sales.\n", len(*sales))
-	fmt.Println("Writing sales to CSV.")
-
-	err = writer.SalesReport(registers, users, customers, products,
-		sales, manager.vend.DomainPrefix, manager.vend.TimeZone)
+	// Version, to paginate.
+	var v int64
+	// Get first page.
+	sales, v, err := vendapi.SalePage(v, manager.vend.DomainPrefix, manager.vend.Token)
+	fname, err := writer.CreateReport(manager.vend.DomainPrefix)
 	if err != nil {
 		log.Fatalf("Failed writing sales to CSV: %s", err)
+	}
+
+	// Get and write remaining pages.
+	for len(sales) > 0 {
+		sales, v, err = vendapi.SalePage(v, manager.vend.DomainPrefix, manager.vend.Token)
+
+		writer.WriteReport(fname, registers, users, customers, products,
+			sales, manager.vend.DomainPrefix, manager.vend.TimeZone)
+		if err != nil {
+			log.Fatalf("Failed writing sales to CSV: %s", err)
+		}
 	}
 }
