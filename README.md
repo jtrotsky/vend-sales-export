@@ -10,7 +10,7 @@ is sensitive, so please be careful and respect the privacy of the store owner.
 ### Arguments
 ```
 -d Domain prefix. The name of the Vend store (prefix of xxxx.vendhq.com).
--t API Access Token. Generated from Setup -> API Access.
+-t API Access Token. Generated from Setup -> Personal Tokens.
 -z Timezone. In zoneinfo format. The default is to try and use the computer's local timezone.
 ```
 
