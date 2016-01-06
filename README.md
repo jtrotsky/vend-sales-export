@@ -19,4 +19,4 @@ is sensitive, so please be careful and respect the privacy of the store owner.
 ./spate -d honestmulch -z Pacific/Auckland -t oe1R9xoQeJRUdyVkz6trbcf9GnUTBovJWKRSBCEf
 ```
 
-[](spate_usage.gif)
+[](docs/spate_usage.gif)
