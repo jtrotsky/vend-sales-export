@@ -18,7 +18,7 @@ func NewManager(vend vend.Client) *Manager {
 	return &Manager{vend}
 }
 
-// Run executes the process of grabbing sales then writing them to CSV.
+// Run grabs sales then writes them to CSV.
 func (manager *Manager) Run() {
 	// Using log gives us an opening timestamp.
 	log.Printf("BEGIN\n")
@@ -27,35 +27,35 @@ func (manager *Manager) Run() {
 	// Get registers.
 	registers, err := manager.vend.Registers()
 	if err != nil {
-		log.Fatalf("Failed to get registers: %s", err)
+		log.Fatalf("Failed to get registers: %v", err)
 	}
 
 	fmt.Printf("\n\nGrabbing users.\n")
 	// Get users.
 	users, err := manager.vend.Users()
 	if err != nil {
-		log.Fatalf("Failed to get users: %s", err)
+		log.Fatalf("Failed to get users: %v", err)
 	}
 
 	fmt.Printf("\n\nGrabbing customers.\n")
 	// Get customers.
 	customers, err := manager.vend.Customers()
 	if err != nil {
-		log.Fatalf("Failed to get customers: %s", err)
+		log.Fatalf("Failed to get customers: %v", err)
 	}
 
 	fmt.Printf("\n\nGrabbing products.\n")
 	// Get all products from the beginning of time.
 	products, _, err := manager.vend.Products()
 	if err != nil {
-		log.Fatalf("Failed to get products: %s", err)
+		log.Fatalf("Failed to get products: %v", err)
 	}
 
 	fmt.Printf("\n\nGrabbing sales.\n")
 	// Get all sales from the beginning of time.
 	sales, err := manager.vend.Sales()
 	if err != nil {
-		log.Fatalf("Failed to get sales: %s", err)
+		log.Fatalf("Failed to get sales: %v", err)
 	}
 
 	fmt.Println("")
@@ -64,9 +64,8 @@ func (manager *Manager) Run() {
 	fmt.Printf("\nGot %d sales.\n", len(*sales))
 	fmt.Println("Writing sales to CSV.")
 
-	err = writer.SalesReport(registers, users, customers, products,
-		sales, manager.vend.DomainPrefix, manager.vend.TimeZone)
-	if err != nil {
-		log.Fatalf("Failed writing sales to CSV: %s", err)
+	if err = writer.SalesReport(registers, users, customers, products,
+		sales, manager.vend.DomainPrefix, manager.vend.TimeZone); err != nil {
+		log.Fatalf("Failed writing sales to CSV: %v", err)
 	}
 }
