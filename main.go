@@ -25,6 +25,8 @@ func main() {
 }
 
 func init() {
+	// TODO: Better logging? File? Other?
+	log.SetOutput(os.Stderr)
 
 	// Get store info from command line flags.
 	flag.StringVar(&domainPrefix, "d", "",
