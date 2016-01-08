@@ -98,7 +98,6 @@ func (manager *Manager) Run() {
 
 			// No point trying to write when response is empty.
 			if len(rawSalePage) > 2 {
-
 				fmt.Println("Got page, writing.")
 				file = writer.WriteReport(file, registers, users, customers, products, sales,
 					manager.vend.DomainPrefix, manager.vend.TimeZone)
