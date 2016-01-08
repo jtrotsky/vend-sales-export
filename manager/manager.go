@@ -20,7 +20,7 @@ func NewManager(vend vend.Client) *Manager {
 	return &Manager{vend}
 }
 
-// Run executes the process of grabbing sales then writing them to CSV.
+// Run grabs sales then writes them to CSV.
 func (manager *Manager) Run() {
 	// Using log gives us an opening timestamp.
 	log.Printf("BEGIN\n")
@@ -29,34 +29,34 @@ func (manager *Manager) Run() {
 	// Get registers.
 	registers, err := manager.vend.Registers()
 	if err != nil {
-		log.Fatalf("Failed to get registers: %s", err)
+		log.Fatalf("Failed to get registers: %v", err)
 	}
 
 	fmt.Printf("\n\nGrabbing users.\n")
 	// Get users.
 	users, err := manager.vend.Users()
 	if err != nil {
-		log.Fatalf("Failed to get users: %s", err)
+		log.Fatalf("Failed to get users: %v", err)
 	}
 
 	fmt.Printf("\n\nGrabbing customers.\n")
 	// Get customers.
 	customers, err := manager.vend.Customers()
 	if err != nil {
-		log.Fatalf("Failed to get customers: %s", err)
+		log.Fatalf("Failed to get customers: %v", err)
 	}
 
 	fmt.Printf("\n\nGrabbing products.\n")
 	// Get all products from the beginning of time.
 	products, _, err := manager.vend.Products()
 	if err != nil {
-		log.Fatalf("Failed to get products: %s", err)
+		log.Fatalf("Failed to get products: %v", err)
 	}
 
 	// Create template report to be written to.
 	file, err := writer.CreateReport(manager.vend.DomainPrefix)
 	if err != nil {
-		log.Fatalf("Failed writing sales to CSV: %s", err)
+		log.Fatalf("Failed creating template CSV: %v", err)
 	}
 	// Make sure file is closed at end.
 	defer file.Close()

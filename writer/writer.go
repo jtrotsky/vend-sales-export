@@ -66,7 +66,6 @@ func WriteReport(file *os.File, registers *[]vend.Register, users *[]vend.User,
 	writer := csv.NewWriter(file)
 
 	for _, sale := range sales {
-
 		// Prepare data to be written to CSV.
 		// Do not include deleted sales in reports.
 		if sale.DeletedAt != nil {
@@ -94,8 +93,8 @@ func WriteReport(file *os.File, registers *[]vend.Register, users *[]vend.User,
 		}
 
 		// TODO: Clean up.
-		var customerName, customerFirstName, customerLastName,
-			customerCompanyName, customerCode string
+		var customerName, customerFirstName, customerLastName, customerCompanyName,
+			customerCode string
 		var customerFullName []string
 		for _, customer := range *customers {
 			// Make sure we only use info from customer on our sale.
@@ -119,7 +118,7 @@ func WriteReport(file *os.File, registers *[]vend.Register, users *[]vend.User,
 			}
 		}
 
-		// Sale not wrapped in quote marks.
+		// Sale note wrapped in quote marks.
 		var saleNote string
 		if sale.Note != nil {
 			saleNote = fmt.Sprintf("%q", *sale.Note)
