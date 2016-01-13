@@ -66,7 +66,7 @@ func (manager *Manager) Run() {
 	var v int64
 	// Sale object to unmarshal raw JSON into.
 	sales := []vend.Sale{}
-	// Get first page of sales
+	// Get first page of sales.
 	rawSalePage, v, err := vend.ResourcePage(v, manager.vend.DomainPrefix, manager.vend.Token,
 		"sales")
 	// Unmarshal payload into sales object.
@@ -113,6 +113,6 @@ func (manager *Manager) Run() {
 		os.Remove(file.Name())
 	}
 	// Using log gives us a closing timestamp.
-	log.Println("")
+	fmt.Println("")
 	log.Printf("FIN\n")
 }
